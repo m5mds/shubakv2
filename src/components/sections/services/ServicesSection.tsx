@@ -1,0 +1,264 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import { useLocale } from '@/lib/i18n/context'
+import { services, localise } from '@/lib/services-data'
+
+export default function ServicesSection() {
+  const { dict, locale } = useLocale()
+  const [openSlug, setOpenSlug] = useState<string | null>(null)
+
+  const openService = openSlug ? services.find((s) => s.slug === openSlug) ?? null : null
+  const openIndex = openSlug ? services.findIndex((s) => s.slug === openSlug) : -1
+
+  const closeModal = useCallback(() => setOpenSlug(null), [])
+
+  const navigate = useCallback(
+    (dir: 1 | -1) => {
+      if (openIndex === -1) return
+      const next = (openIndex + dir + services.length) % services.length
+      setOpenSlug(services[next].slug)
+    },
+    [openIndex]
+  )
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (openSlug === null) return
+      if (e.key === 'Escape') closeModal()
+      if (e.key === 'ArrowLeft') navigate(locale === 'ar' ? 1 : -1)
+      if (e.key === 'ArrowRight') navigate(locale === 'ar' ? -1 : 1)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [openSlug, closeModal, navigate, locale])
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (openSlug !== null) {
+      document.body.classList.add('wdetail-open')
+    } else {
+      document.body.classList.remove('wdetail-open')
+    }
+    return () => document.body.classList.remove('wdetail-open')
+  }, [openSlug])
+
+  const tickerItems = dict.ticker.items.concat(dict.ticker.items)
+
+  function handleTileMouseMove(e: React.MouseEvent<HTMLElement>) {
+    const card = e.currentTarget
+    const r = card.getBoundingClientRect()
+    card.style.setProperty('--mx', ((e.clientX - r.left) / r.width) * 100 + '%')
+    card.style.setProperty('--my', ((e.clientY - r.top) / r.height) * 100 + '%')
+  }
+
+  function handleClose(e: React.MouseEvent) {
+    const target = e.target as HTMLElement
+    if (target.closest('[data-wclose]')) closeModal()
+  }
+
+  const isOpen = openSlug !== null
+
+  return (
+    <>
+      {/* Ticker band */}
+      <div className="ticker" aria-hidden="true">
+        <div className="ticker__track">
+          {tickerItems.map((item, i) => (
+            <span key={i} className="ticker__item">
+              ◆ {item}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Services section */}
+      <section className="section" id="services">
+        <div className="wrap">
+          <div className="sec-head">
+            <span className="label">{dict.services.sectionTag}</span>
+            <h2 className="sec-head__title">
+              <span>{dict.services.heading}</span>
+              <span className="accent">{dict.services.headingAccent}</span>
+            </h2>
+          </div>
+
+          <div className="wgrid" id="wgrid" role="list">
+            {services.map((svc) => (
+              <article
+                key={svc.slug}
+                className="wtile"
+                role="listitem"
+                data-svc={svc.slug}
+                tabIndex={0}
+                aria-label={localise(svc.title, locale)}
+                onClick={() => setOpenSlug(svc.slug)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpenSlug(svc.slug) } }}
+                onMouseMove={handleTileMouseMove}
+              >
+                <div className="wtile__glass" aria-hidden="true">
+                  <span className="wtile__cross"></span>
+                </div>
+                <div className="wtile__body">
+                  <div className="wtile__top">
+                    <span className="wtile__num">{svc.num}</span>
+                    <span className="wtile__glyph" aria-hidden="true">
+                      {svc.slug === 'web' && (
+                        <svg viewBox="0 0 28 28" fill="none">
+                          <rect x="4" y="6" width="20" height="16" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
+                          <path d="M4 10h20M8 15h6M8 18h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                        </svg>
+                      )}
+                      {svc.slug === 'mobile' && (
+                        <svg viewBox="0 0 28 28" fill="none">
+                          <rect x="9" y="3" width="10" height="22" rx="2" stroke="currentColor" strokeWidth="1.4"/>
+                          <path d="M13 22h2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                        </svg>
+                      )}
+                      {svc.slug === 'ai' && (
+                        <svg viewBox="0 0 28 28" fill="none">
+                          <circle cx="14" cy="14" r="4" stroke="currentColor" strokeWidth="1.4"/>
+                          <path d="M14 4v4M14 20v4M4 14h4M20 14h4M7 7l2.8 2.8M18.2 18.2L21 21M7 21l2.8-2.8M18.2 9.8L21 7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                        </svg>
+                      )}
+                      {svc.slug === 'ux' && (
+                        <svg viewBox="0 0 28 28" fill="none">
+                          <path d="M6 23L22 7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                          <path d="M17 5h6v6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                          <circle cx="6" cy="23" r="1.6" stroke="currentColor" strokeWidth="1.4"/>
+                        </svg>
+                      )}
+                      {svc.slug === 'auto' && (
+                        <svg viewBox="0 0 28 28" fill="none">
+                          <path d="M5 14h6l3-6 4 12 3-6h2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                      {svc.slug === 'consult' && (
+                        <svg viewBox="0 0 28 28" fill="none">
+                          <path d="M5 14h4l2-7 2 14 2-7h4M21 14h2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                    </span>
+                  </div>
+                  <h3 className="wtile__title">{localise(svc.title, locale)}</h3>
+                  <p className="wtile__desc">{localise(svc.description, locale)}</p>
+                  <span className="wtile__peek">
+                    {locale === 'ar' ? 'افتح الشبّاك' : 'Open window'}
+                    <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+                      <path d="M8 1L2 5l6 4M2 5h11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        {/* Window Detail overlay */}
+        <div
+          className={`wdetail${isOpen ? ' is-open' : ''}`}
+          id="wdetail"
+          aria-hidden={!isOpen}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="wdetail-title"
+          onClick={handleClose}
+        >
+          <div className="wdetail__backdrop" data-wclose></div>
+          <div className="wdetail__frame" id="wdetail-frame">
+            <div className="wdetail__chrome">
+              <div className="wdetail__dots" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <div className="wdetail__addr">
+                <span className="wdetail__addr-cross" aria-hidden="true"></span>
+                <span id="wdetail-addr">
+                  shubak.sa/services/{openService?.slug ?? ''}
+                </span>
+              </div>
+              <button
+                className="wdetail__close"
+                type="button"
+                data-wclose
+                aria-label={locale === 'ar' ? 'إغلاق' : 'Close'}
+                onClick={closeModal}
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                </svg>
+              </button>
+            </div>
+
+            <div className="wdetail__scroll">
+              {openService && (
+                <>
+                  <div className="wdetail__hero">
+                    <span className="wdetail__num" id="wdetail-num">{openService.num}</span>
+                    <h3 className="wdetail__title" id="wdetail-title">
+                      {localise(openService.title, locale)}
+                    </h3>
+                    <p className="wdetail__tag" id="wdetail-tag">
+                      {localise(openService.tag, locale)}
+                    </p>
+                  </div>
+
+                  <div className="wdetail__grid">
+                    <section className="wdetail__block wdetail__block--wide">
+                      <span className="wdetail__klabel">
+                        {locale === 'ar' ? 'نظرة عامّة' : 'Overview'}
+                      </span>
+                      <p className="wdetail__over" id="wdetail-over">
+                        {localise(openService.overview, locale)}
+                      </p>
+                    </section>
+
+                    <section className="wdetail__block">
+                      <span className="wdetail__klabel">
+                        {locale === 'ar' ? 'ما نُسلّمه' : 'What we deliver'}
+                      </span>
+                      <ul className="wdetail__list" id="wdetail-deliver">
+                        {openService.deliver[locale].map((item, i) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
+                    </section>
+
+                    <section className="wdetail__block">
+                      <span className="wdetail__klabel">
+                        {locale === 'ar' ? 'التقنيات' : 'Stack'}
+                      </span>
+                      <ul className="wdetail__chips" id="wdetail-stack">
+                        {openService.stack.map((chip, i) => (
+                          <li key={i}>{chip}</li>
+                        ))}
+                      </ul>
+                    </section>
+
+                    <section className="wdetail__block wdetail__block--wide">
+                      <span className="wdetail__klabel">
+                        {locale === 'ar' ? 'مثال حقيقي' : 'Sample'}
+                      </span>
+                      <p className="wdetail__sample" id="wdetail-sample">
+                        {localise(openService.sample, locale)}
+                      </p>
+                    </section>
+                  </div>
+
+                  <div className="wdetail__cta">
+                    <a href="#contact" className="btn btn--primary" data-wclose onClick={closeModal}>
+                      <span>{locale === 'ar' ? 'نبني لك واحد زي كذا' : 'Build one like this'}</span>
+                      <span className="btn__arr" aria-hidden="true">→</span>
+                    </a>
+                    <span className="wdetail__hint">
+                      {locale === 'ar' ? 'ESC للإغلاق • ← → للتنقّل' : 'ESC to close • ← → to navigate'}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  )
+}
