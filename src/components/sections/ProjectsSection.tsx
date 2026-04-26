@@ -31,7 +31,7 @@ export default function ProjectsSection() {
             const layout = MOCK_LAYOUTS[i] ?? 'side-main'
             return (
               <SectionReveal key={i} delay={i * 0.06}>
-                <a className="work-card" href="#">
+                <div className="work-card">
                   <div className="work-card__media">
                     <div className="work-card__mock">
                       <div className="work-card__mock-bar">
@@ -68,7 +68,7 @@ export default function ProjectsSection() {
                     <h3 className="work-card__title">{item.title}</h3>
                     <p className="work-card__desc">{item.description}</p>
                   </div>
-                </a>
+                </div>
               </SectionReveal>
             )
           })}

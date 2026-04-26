@@ -6,8 +6,8 @@ export const en: Dict = {
   },
   nav: {
     brand: 'shubak',
-    about: 'About',
     services: 'Services',
+    about: 'About',
     contact: 'Contact',
     startProject: "Let's build",
     openMenu: 'Open menu',
@@ -24,32 +24,6 @@ export const en: Dict = {
     badge1: 'Design',
     badge2: 'Build',
     badge3: 'Ship',
-  },
-  about: {
-    sectionTag: 'Why Shubak',
-    sectionHeading: 'One team. Idea to launch.',
-    points: [
-      {
-        title: 'Arabic-first',
-        description:
-          'RTL, Arabic numerals, and Hijri calendar built in from day one — not bolted on later.',
-      },
-      {
-        title: 'Ship fast',
-        description:
-          'Weekly cycles, real deliverables. From idea to working product in weeks, not months.',
-      },
-      {
-        title: 'End-to-end',
-        description:
-          'Design, development, and strategy under one roof. No vendor coordination overhead.',
-      },
-      {
-        title: 'Post-launch support',
-        description:
-          'We monitor, iterate, and stay with you after the product goes live. Launch day is the beginning.',
-      },
-    ],
   },
   services: {
     sectionTag: 'What we do',
@@ -119,21 +93,80 @@ export const en: Dict = {
   },
   cta: {
     eyebrow: 'Ready?',
-    heading: "Let's open your window.",
+    headingMain: "Let's open",
+    headingAccent: ' your window.',
     subtitle:
       "Four quick questions. We'll reply in one business day with a candid answer — and if we're not the right fit, we'll tell you.",
     trustLine: 'We reply within one business day',
   },
   contact: {
-    name: 'Your name',
-    email: 'Email',
-    message: 'Tell us more',
-    submit: 'Open the window',
-    successMessage: 'Window opened ✦ Got it. We\'ll reply within one business day.',
-    requiredFields: 'Fill in all required fields.',
-    invalidEmail: 'Invalid email address.',
-    errorMessage: 'Something went wrong. Please try again.',
-    retry: 'Try again',
+    wizard: {
+      steps: {
+        reason: 'Reason',
+        product: 'Product',
+        budget: 'Budget',
+        contact: 'Contact',
+      },
+      step1: {
+        kicker: 'Step 1 of 4',
+        q: 'How can we help?',
+        hint: "Pick what fits best — you can change it later.",
+      },
+      step2: {
+        kicker: 'Step 2 of 4',
+        q: 'What kind of product?',
+        hint: 'Pick one or more — we combine specialties.',
+      },
+      step3: {
+        kicker: 'Step 3 of 4',
+        q: 'Rough budget?',
+        hint: "We just need the range — nothing binding.",
+      },
+      step4: {
+        kicker: 'Step 4 of 4',
+        q: 'How do we reach you?',
+        hint: 'We reply within one business day — no spam.',
+      },
+      reasons: {
+        idea: { title: 'Clear idea', desc: "I've got the idea. I need a team to ship it." },
+        consult: { title: 'Still cooking', desc: "Let's shape it together before we ship." },
+        revamp: { title: 'Existing product', desc: "I've got a product. Let's level it up." },
+        other: { title: 'Something else', desc: 'Tell us the story in the last step.' },
+      },
+      products: {
+        web: 'Web platform',
+        mobile: 'Mobile app',
+        ai: 'AI / assistant',
+        design: 'UX / UI design',
+        automation: 'Automation',
+        consult: 'Tech consulting',
+      },
+      budgets: {
+        lt10: 'Under 10,000',
+        b1020: '10,000 — 20,000',
+        b2050: '20,000 — 50,000',
+        b50200: '50,000 — 200,000',
+        gt200: '200,000+',
+        unsure: 'Not sure — help me scope',
+      },
+      fields: {
+        name: 'Your name',
+        email: 'Email',
+        company: 'Company (if any)',
+        phone: 'Phone',
+        brief: 'Tell us more',
+      },
+      back: 'Back',
+      next: 'Next',
+      submit: 'Open the window',
+      doneTitle: 'Window opened ✦',
+      doneHint: "Got it. We'll reply within one business day.",
+      restart: 'Send another',
+      errorRequired: 'Fill in all required fields.',
+      errorEmail: 'Invalid email address.',
+      errorServer: 'Something went wrong. Please try again.',
+      counterTotal: '4',
+    },
   },
   ticker: {
     items: [
@@ -152,7 +185,6 @@ export const en: Dict = {
     servicesCol: 'Services',
     companyCol: 'Company',
     connectCol: 'Connect',
-    aboutLink: 'About',
     contactLink: 'Start a project',
     connectItems: [
       { label: 'hello@shubak.ai', href: 'mailto:hello@shubak.ai' },

@@ -81,17 +81,17 @@ export function Navbar() {
           <NavSeparator />
 
           <Link
-            href="/#about"
-            className="relative hidden min-h-[44px] items-center text-[14px] font-medium text-white/70 transition-colors hover:text-white md:flex after:absolute after:bottom-0 after:start-0 after:block after:h-px after:w-full after:origin-start after:scale-x-0 after:bg-white/40 after:transition-transform after:duration-300 hover:after:scale-x-100"
-          >
-            {dict.nav.about}
-          </Link>
-
-          <Link
             href="/#services"
             className="relative hidden min-h-[44px] items-center text-[14px] font-medium text-white/70 transition-colors hover:text-white md:flex after:absolute after:bottom-0 after:start-0 after:block after:h-px after:w-full after:origin-start after:scale-x-0 after:bg-white/40 after:transition-transform after:duration-300 hover:after:scale-x-100"
           >
             {dict.nav.services}
+          </Link>
+
+          <Link
+            href="/#process"
+            className="relative hidden min-h-[44px] items-center text-[14px] font-medium text-white/70 transition-colors hover:text-white md:flex after:absolute after:bottom-0 after:start-0 after:block after:h-px after:w-full after:origin-start after:scale-x-0 after:bg-white/40 after:transition-transform after:duration-300 hover:after:scale-x-100"
+          >
+            {dict.nav.about}
           </Link>
 
           <Link

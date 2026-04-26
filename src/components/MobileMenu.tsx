@@ -78,7 +78,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
 
   const links = [
     { href: '/#services', label: dict.nav.services },
-    { href: '/#about', label: dict.nav.about },
+    { href: '/#process', label: dict.nav.about },
     { href: '/contact', label: dict.footer.contactLink },
   ]
 

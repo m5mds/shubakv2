@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Alexandria, DM_Sans, Instrument_Serif } from 'next/font/google'
+import { Alexandria } from 'next/font/google'
 import { LocaleProvider } from '@/lib/i18n/context'
 import { ar } from '@/lib/i18n/ar'
 import { en } from '@/lib/i18n/en'
@@ -11,21 +11,8 @@ import './globals.css'
 
 const alexandria = Alexandria({
   subsets: ['arabic', 'latin'],
-  weight: ['300', '400', '600', '700'],
+  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-readex',
-  display: 'swap',
-})
-
-const dmSans = DM_Sans({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
-})
-
-const instrumentSerif = Instrument_Serif({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-serif',
   display: 'swap',
 })
 
@@ -65,9 +52,9 @@ export default function RootLayout({
       lang="ar"
       dir="rtl"
       suppressHydrationWarning
-      className={`${alexandria.variable} ${dmSans.variable} ${instrumentSerif.variable} lang-ar relative min-h-screen bg-[#0a0a0f] text-[#ededed] antialiased`}
+      className={`${alexandria.variable} lang-ar relative min-h-screen bg-[#0a0a0f] text-[#ededed] antialiased`}
     >
-      <body suppressHydrationWarning className="relative">
+      <body suppressHydrationWarning data-accent="amber" className="relative">
         <a
           href="#main-content"
           className="absolute left-4 top-4 z-[202] -translate-y-16 rounded-full border border-white/15 bg-[#111118] px-4 py-2 text-xs uppercase tracking-[0.14em] text-white transition-transform focus:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"

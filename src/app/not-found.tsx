@@ -11,7 +11,7 @@ export default function NotFound() {
         </div>
 
         <div className="px-8 py-12 md:px-12 md:py-14">
-          <div className="mb-6 text-[clamp(64px,14vw,140px)] font-serif leading-none text-white/12 select-none">
+          <div className="mb-6 text-[clamp(64px,14vw,140px)] font-light leading-none text-white/12 select-none">
             404
           </div>
 

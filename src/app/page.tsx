@@ -1,6 +1,5 @@
 import ServicesSection from '@/components/sections/services/ServicesSection'
 import { HeroZpush } from '@/components/sections/Hero/HeroZpush'
-import AboutSection from '@/components/sections/AboutSection'
 import ProcessSection from '@/components/sections/ProcessSection'
 import ProjectsSection from '@/components/sections/ProjectsSection'
 import CtaSection from '@/components/sections/CtaSection'
@@ -19,8 +18,6 @@ export default function HomePage() {
     <div className="homepage-shell w-full">
       <HeroZpush />
       <HomepageSeam variant="homepage-seam--hero-services" />
-      <AboutSection />
-      <HomepageSeam variant="homepage-seam--services-about" />
       <ServicesSection />
       <HomepageSeam variant="homepage-seam--about-process" />
       <ProcessSection />
