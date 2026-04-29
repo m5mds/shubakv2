@@ -70,7 +70,7 @@ export default function RootLayout({
               description: en.hero.description,
               address: {
                 '@type': 'PostalAddress',
-                addressLocality: 'Riyadh',
+                addressLocality: 'Tabuk',
                 addressCountry: 'SA',
               },
               areaServed: 'Worldwide',

@@ -189,7 +189,7 @@ export const en: Dict = {
   },
   footer: {
     tagline: 'A Saudi product studio. We build products that work.',
-    location: 'Riyadh · Saudi Arabia',
+    location: 'Tabuk · Saudi Arabia',
     global: 'Remote-friendly worldwide',
     servicesCol: 'Services',
     companyCol: 'Company',
