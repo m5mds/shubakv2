@@ -9,6 +9,7 @@ import { PageTransitionProvider } from '@/components/providers/PageTransitionPro
 import { SiteReveal } from '@/components/providers/SiteReveal'
 import { Navbar } from '@/components/layout/Navbar'
 import { CustomCursor } from '@/components/ui/CustomCursor'
+import { LocaleDirectionSync } from '@/components/providers/LocaleDirectionSync'
 import Footer from '@/components/layout/Footer'
 import './globals.css'
 
@@ -89,6 +90,7 @@ export default function RootLayout({
         <SiteReveal />
         <SmoothScrollProvider>
           <LocaleProvider>
+            <LocaleDirectionSync />
             <Navbar />
             <PageTransitionProvider>
               <main id="main-content" className="relative min-h-screen">{children}</main>

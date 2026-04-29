@@ -16,10 +16,12 @@ export function SiteReveal() {
       if (sessionStorage.getItem(SESSION_KEY)) return
       sessionStorage.setItem(SESSION_KEY, '1')
     } catch {
-      // sessionStorage unavailable — always skip
       return
     }
     setVisible(true)
+    // Dismiss after a beat — triggers the exit animation
+    const t = setTimeout(() => setVisible(false), 600)
+    return () => clearTimeout(t)
   }, [reduce])
 
   return (
