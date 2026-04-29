@@ -187,7 +187,7 @@ export const ar = {
   },
   footer: {
     tagline: 'استوديو منتجات سعودي. نبني منتجات تشتغل.',
-    location: 'الرياض · السعودية',
+    location: 'تبوك · السعودية',
     global: 'نعمل عن بُعد مع الجميع',
     servicesCol: 'خدماتنا',
     companyCol: 'شركة',
