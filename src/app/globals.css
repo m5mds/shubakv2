@@ -954,6 +954,51 @@ body.wdetail-open { overflow: hidden; }
 /* =============================================================
    Process / Timeline
    ============================================================= */
+.tl__overview {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 72px;
+  max-width: 1000px;
+  margin-inline: auto;
+}
+.tl__overview-item {
+  padding: 22px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg-elev);
+  transition: background 0.2s var(--ease);
+}
+.tl__overview-item + .tl__overview-item {
+  border-inline-start: 1px solid var(--line);
+}
+.tl__overview-num {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+}
+.tl__overview-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-dim);
+}
+@media (max-width: 640px) {
+  .tl__overview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tl__overview-item:nth-child(3) {
+    border-inline-start: none;
+    border-top: 1px solid var(--line);
+  }
+  .tl__overview-item:nth-child(4) {
+    border-top: 1px solid var(--line);
+  }
+}
+
 .tl {
   position: relative;
   max-width: 1000px;
@@ -1792,6 +1837,39 @@ body[dir="rtl"] .site-footer__link::after { transform-origin: 100% 50%; }
   text-transform: uppercase;
   color: var(--ink-mute);
   font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================
+   Grain texture — film-grain overlay above all content
+   ============================================================= */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 9990;
+  opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  background-repeat: repeat;
+  animation: grain-drift 8s steps(10) infinite;
+}
+@keyframes grain-drift {
+  0%,100% { transform: translate(0,    0);    }
+  10%      { transform: translate(-2%, -3%);  }
+  20%      { transform: translate( 3%,  1%);  }
+  30%      { transform: translate(-1%,  4%);  }
+  40%      { transform: translate( 4%, -2%);  }
+  50%      { transform: translate(-3%,  3%);  }
+  60%      { transform: translate( 2%, -4%);  }
+  70%      { transform: translate(-4%,  1%);  }
+  80%      { transform: translate( 1%,  3%);  }
+  90%      { transform: translate(-2%, -1%);  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none; }
 }
 
 /* =============================================================

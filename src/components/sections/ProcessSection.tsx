@@ -74,6 +74,15 @@ export default function ProcessSection() {
           </h2>
         </div>
 
+        <div className="tl__overview" aria-hidden="true">
+          {steps.map((step, i) => (
+            <div key={i} className="tl__overview-item">
+              <span className="tl__overview-num">{String(i + 1).padStart(2, '0')}</span>
+              <span className="tl__overview-name">{step.name}</span>
+            </div>
+          ))}
+        </div>
+
         <ol className="tl" ref={tlRef} aria-label="Process timeline">
           <span className="tl__spine" aria-hidden="true"></span>
           <span className="tl__spine-fill" aria-hidden="true"></span>

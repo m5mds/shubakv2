@@ -1,9 +1,12 @@
 import type { Metadata } from 'next'
 import { Alexandria } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import { LocaleProvider } from '@/lib/i18n/context'
 import { ar } from '@/lib/i18n/ar'
 import { en } from '@/lib/i18n/en'
 import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider'
+import { PageTransitionProvider } from '@/components/providers/PageTransitionProvider'
+import { SiteReveal } from '@/components/providers/SiteReveal'
 import { Navbar } from '@/components/layout/Navbar'
 import { CustomCursor } from '@/components/ui/CustomCursor'
 import Footer from '@/components/layout/Footer'
@@ -18,24 +21,16 @@ const alexandria = Alexandria({
 
 export const metadata: Metadata = {
   title: {
-    default: `${ar.site.brand} — ${ar.footer.tagline} | ${en.site.brand} — ${en.footer.tagline}`,
-    template: `%s — ${ar.site.brand} ${en.site.brand}`,
+    default: 'shubak — Product Studio · Saudi Arabia',
+    template: '%s — shubak',
   },
-  description: `${ar.hero.description} | ${en.hero.description}`,
+  description: en.hero.description,
   metadataBase: new URL('https://shubak.ai'),
   openGraph: {
     type: 'website',
     locale: 'ar_SA',
     alternateLocale: 'en_US',
-    siteName: en.site.brand,
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: `${en.site.brand} — ${en.footer.tagline}`,
-      },
-    ],
+    siteName: 'shubak',
   },
   twitter: {
     card: 'summary_large_image',
@@ -59,16 +54,49 @@ export default function RootLayout({
           href="#main-content"
           className="absolute left-4 top-4 z-[202] -translate-y-16 rounded-full border border-white/15 bg-[#111118] px-4 py-2 text-xs uppercase tracking-[0.14em] text-white transition-transform focus:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
         >
-          Skip to Content
+          تخطّى للمحتوى / Skip to content
         </a>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'ProfessionalService',
+              name: 'shubak',
+              alternateName: 'شُبّاك',
+              url: 'https://shubak.ai',
+              email: 'hello@shubak.ai',
+              description: en.hero.description,
+              address: {
+                '@type': 'PostalAddress',
+                addressLocality: 'Riyadh',
+                addressCountry: 'SA',
+              },
+              areaServed: 'Worldwide',
+              serviceType: [
+                'Web Platform Development',
+                'Mobile Application Development',
+                'Applied AI',
+                'UX / UI Design',
+                'Automation',
+                'Technical Consulting',
+              ],
+              sameAs: ['https://linkedin.com/company/shubak'],
+            }),
+          }}
+        />
         <CustomCursor />
+        <SiteReveal />
         <SmoothScrollProvider>
           <LocaleProvider>
             <Navbar />
-            <main id="main-content" className="relative min-h-screen">{children}</main>
+            <PageTransitionProvider>
+              <main id="main-content" className="relative min-h-screen">{children}</main>
+            </PageTransitionProvider>
             <Footer />
           </LocaleProvider>
         </SmoothScrollProvider>
+        <Analytics />
       </body>
     </html>
   )

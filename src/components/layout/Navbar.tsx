@@ -30,47 +30,56 @@ function HamburgerIcon({ open }: { open: boolean }) {
 const NAV_LINK_CLASS =
   'relative hidden min-h-[44px] items-center text-[14px] font-medium text-white/70 transition-colors hover:text-white md:flex after:absolute after:bottom-0 after:start-0 after:block after:h-px after:w-full after:origin-start after:scale-x-0 after:bg-white/40 after:transition-transform after:duration-300 hover:after:scale-x-100'
 
+const EASE = [0.16, 1, 0.3, 1] as const
+
 export function Navbar() {
   const { locale, setLocale, dict } = useLocale()
   const prefersReducedMotion = useReducedMotion()
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [viewportW, setViewportW] = useState(0)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40)
-    }
-    handleScroll()
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    const updateVW = () => setViewportW(window.innerWidth)
+    updateVW()
+    window.addEventListener('resize', updateVW, { passive: true })
+    return () => window.removeEventListener('resize', updateVW)
+  }, [])
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   const closeMenu = useCallback(() => setMenuOpen(false), [])
 
+  // Compute the wide pixel width client-side to avoid CSS min() animation artifacts
+  const wideW = viewportW > 0 ? Math.min(1280, viewportW - 32) : null
+
   return (
     <>
-      <header
+      <motion.header
         className="fixed top-6 left-1/2 z-[100] -translate-x-1/2"
-        style={{
-          width: 'max-content',
-          maxWidth: 'calc(100vw - 32px)',
-          minWidth: scrolled ? '0' : 'min(1280px, calc(100vw - 32px))',
-          transition: 'min-width 400ms cubic-bezier(0.16,1,0.3,1)',
-        }}
+        style={{ maxWidth: 'calc(100vw - 32px)' }}
+        initial={false}
+        animate={wideW !== null ? { width: scrolled ? 'auto' : wideW } : undefined}
+        transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5, ease: EASE }}
       >
         <nav
-          className="flex items-center rounded-full border transition-[background-color,border-color,backdrop-filter,padding,gap] duration-[400ms] ease-[var(--ease-out-expo)]"
+          className="flex w-full items-center rounded-full border transition-[background-color,border-color,backdrop-filter,padding,gap] duration-500"
           style={{
             padding: scrolled ? '0.5rem 1rem' : '0.625rem 1.5rem',
-            gap: scrolled ? '1rem' : '1.5rem',
-            justifyContent: scrolled ? 'flex-start' : 'space-between',
+            gap: scrolled ? '0.75rem' : '1.5rem',
             background: scrolled ? 'rgba(15, 17, 21, 0.85)' : 'transparent',
             borderColor: scrolled ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.04)',
             backdropFilter: scrolled ? 'blur(12px)' : 'none',
             WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
+            transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >
-          {/* Left: logo */}
+          {/* Logo */}
           <Link
             href="/"
             aria-label={dict.site.brand}
@@ -79,8 +88,8 @@ export function Navbar() {
             <ShubakLogo className="h-4 w-4" aria-hidden="true" />
           </Link>
 
-          {/* Center: nav links (desktop) */}
-          <div className="hidden items-center gap-6 md:flex">
+          {/* Center: flex-1 fills the header width; collapses to nothing when header is auto-width */}
+          <div className="hidden min-w-0 flex-1 items-center justify-center gap-6 md:flex">
             <Link href="/#services" className={NAV_LINK_CLASS}>
               {dict.nav.services}
             </Link>
@@ -93,8 +102,7 @@ export function Navbar() {
           </div>
 
           {/* Right: lang toggle + CTA + hamburger */}
-          <div className="flex items-center gap-3">
-            {/* Language toggle */}
+          <div className="flex shrink-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setLocale(locale === 'ar' ? 'en' : 'ar')}
@@ -106,7 +114,7 @@ export function Navbar() {
                   initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.2, ease: EASE }}
                   className="block"
                 >
                   {locale === 'ar' ? 'EN' : 'AR'}
@@ -114,7 +122,6 @@ export function Navbar() {
               </AnimatePresence>
             </button>
 
-            {/* CTA — desktop only */}
             <motion.div
               className="hidden md:block"
               whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
@@ -127,7 +134,6 @@ export function Navbar() {
               </Link>
             </motion.div>
 
-            {/* Hamburger — mobile only */}
             <button
               type="button"
               onClick={() => setMenuOpen((v) => !v)}
@@ -139,7 +145,7 @@ export function Navbar() {
             </button>
           </div>
         </nav>
-      </header>
+      </motion.header>
 
       <MobileMenu open={menuOpen} onClose={closeMenu} />
     </>

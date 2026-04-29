@@ -50,8 +50,6 @@ export default function ServicesSection() {
     return () => document.body.classList.remove('wdetail-open')
   }, [openSlug])
 
-  const tickerItems = dict.ticker.items.concat(dict.ticker.items)
-
   function handleTileMouseMove(e: React.MouseEvent<HTMLElement>) {
     const card = e.currentTarget
     const r = card.getBoundingClientRect()
@@ -76,15 +74,6 @@ export default function ServicesSection() {
 
   return (
     <>
-      {/* Ticker band */}
-      <div className="ticker" aria-hidden="true">
-        <div className="ticker__track">
-          {tickerItems.map((item, i) => (
-            <span key={i} className="ticker__item">◆ {item}</span>
-          ))}
-        </div>
-      </div>
-
       {/* Services section */}
       <section className="section" id="services">
         <div className="wrap">
@@ -166,7 +155,7 @@ export default function ServicesSection() {
                   <h3 className="wtile__title">{localise(svc.title, locale)}</h3>
                   <p className="wtile__desc">{localise(svc.description, locale)}</p>
                   <span className="wtile__peek">
-                    {locale === 'ar' ? 'افتح الشبّاك' : 'Open window'}
+                    {dict.services.openWindow}
                     <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
                       <path d="M8 1L2 5l6 4M2 5h11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
@@ -240,7 +229,7 @@ export default function ServicesSection() {
                   <div className="wdetail__addr">
                     <span className="wdetail__addr-cross" aria-hidden="true"></span>
                     <span id="wdetail-addr">
-                      shubak.sa/services/{openService_?.slug ?? ''}
+                      shubak.ai/services/{openService_?.slug ?? ''}
                     </span>
                   </div>
                   <button

@@ -7,18 +7,19 @@ export const en: Dict = {
   nav: {
     brand: 'shubak',
     services: 'Services',
-    about: 'About',
+    about: 'Approach',
     contact: 'Contact',
     startProject: "Let's build",
     openMenu: 'Open menu',
     closeMenu: 'Close menu',
+    skipToContent: 'Skip to content',
   },
   hero: {
     eyebrow: 'Product Studio',
     headingLine1: "We don't build websites.",
     headingLine2: 'We ship products.',
     description:
-      'A Saudi product studio. We work with founders and companies from idea to launch — and after.',
+      'Arabic-native by design. We take founders and companies from idea to launch — and stick around after.',
     ctaPrimary: "Let's build",
     ctaSecondary: 'See our work',
     badge1: 'Design',
@@ -29,6 +30,7 @@ export const en: Dict = {
     sectionTag: 'What we do',
     heading: 'One team.',
     headingAccent: ' Idea to launch.',
+    openWindow: 'Open window',
   },
   process: {
     sectionTag: 'How we work',
@@ -159,11 +161,11 @@ export const en: Dict = {
         consult: 'Tech consulting',
       },
       budgets: {
-        lt10: 'Under 10,000',
-        b1020: '10,000 — 20,000',
-        b2050: '20,000 — 50,000',
-        b50200: '50,000 — 200,000',
-        gt200: '200,000+',
+        lt10: 'Under 10,000 SAR',
+        b1020: '10,000 — 20,000 SAR',
+        b2050: '20,000 — 50,000 SAR',
+        b50200: '50,000 — 200,000 SAR',
+        gt200: '200,000+ SAR',
         unsure: 'Not sure — help me scope',
       },
       fields: {
@@ -184,16 +186,6 @@ export const en: Dict = {
       errorServer: 'Something went wrong. Please try again.',
       counterTotal: '4',
     },
-  },
-  ticker: {
-    items: [
-      'Platforms',
-      'Mobile apps',
-      'AI systems',
-      'UI/UX design',
-      'Automation',
-      'Consulting',
-    ],
   },
   footer: {
     tagline: 'A Saudi product studio. We build products that work.',
