@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 const REASON_LABELS: Record<string, string> = {
   idea: 'Clear idea',
   consult: 'Still cooking',
@@ -21,6 +19,7 @@ const BUDGET_LABELS: Record<string, string> = {
 
 export async function POST(req: Request) {
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY)
     const body = await req.json().catch(() => ({}))
     const { reason, products, budget, name, email, company, phone, brief, _hp } =
       body as Record<string, string | string[]>
