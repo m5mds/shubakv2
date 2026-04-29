@@ -128,7 +128,7 @@ export function Navbar() {
             >
               <Link
                 href="/contact"
-                className="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-[var(--accent)] px-10 py-3 text-[15px] font-semibold text-[#0a0a0f] transition-all duration-300 hover:scale-[1.02] hover:brightness-110 hover:shadow-[0_0_20px_rgba(233,139,42,0.4)]"
+                className="inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-[var(--accent)] px-12 py-3 text-[15px] font-semibold text-[#0a0a0f] transition-all duration-300 hover:scale-[1.02] hover:brightness-110 hover:shadow-[0_0_20px_rgba(233,139,42,0.4)]"
               >
                 {dict.nav.startProject}
               </Link>
