@@ -12,6 +12,7 @@ export default function ProcessSection() {
     if (!tl) return
 
     const steps = Array.from(tl.querySelectorAll<HTMLElement>('.tl__step'))
+    let rafId = 0
 
     const update = () => {
       const r = tl.getBoundingClientRect()
@@ -24,21 +25,39 @@ export default function ProcessSection() {
       p = Math.max(0, Math.min(1, p))
       tl.style.setProperty('--p', p.toFixed(3))
 
+      let lastActive: HTMLElement | null = null
       steps.forEach((s) => {
         const sr = s.getBoundingClientRect()
-        const dotY = sr.top + 38
+        const dotY = sr.top + 44
         const activate = dotY < vh * 0.72
         s.classList.toggle('is-in', activate)
+        if (activate) lastActive = s
+      })
+
+      if (lastActive) {
+        // dot is at top:44px within step, height:17px — center at 44+8.5=52.5px
+        // pulse is 8px tall — top = step.offsetTop + 52.5 - 4 ≈ step.offsetTop + 48
+        const pulsePx = (lastActive as HTMLElement).offsetTop + 48
+        tl.style.setProperty('--pulse-top', `${pulsePx}px`)
+      }
+    }
+
+    const onScroll = () => {
+      if (rafId) return
+      rafId = requestAnimationFrame(() => {
+        rafId = 0
+        update()
       })
     }
 
     update()
-    window.addEventListener('scroll', update, { passive: true })
-    window.addEventListener('resize', update)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
 
     return () => {
-      window.removeEventListener('scroll', update)
-      window.removeEventListener('resize', update)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      cancelAnimationFrame(rafId)
     }
   }, [])
 

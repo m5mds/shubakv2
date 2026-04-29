@@ -1,17 +1,29 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useLocale } from '@/lib/i18n/context'
 import { services, localise } from '@/lib/services-data'
 
 export default function ServicesSection() {
   const { dict, locale } = useLocale()
   const [openSlug, setOpenSlug] = useState<string | null>(null)
+  const [openingSlug, setOpeningSlug] = useState<string | null>(null)
+  const tileRectRef = useRef<DOMRect | null>(null)
+  const prefersReducedMotion = useReducedMotion()
 
-  const openService = openSlug ? services.find((s) => s.slug === openSlug) ?? null : null
+  const openService = useCallback((slug: string, rect: DOMRect) => {
+    tileRectRef.current = rect
+    setOpeningSlug(slug)
+    setOpenSlug(slug)
+  }, [])
+
   const openIndex = openSlug ? services.findIndex((s) => s.slug === openSlug) : -1
+  const openService_ = openSlug ? services.find((s) => s.slug === openSlug) ?? null : null
 
-  const closeModal = useCallback(() => setOpenSlug(null), [])
+  const closeModal = useCallback(() => {
+    setOpenSlug(null)
+  }, [])
 
   const navigate = useCallback(
     (dir: 1 | -1) => {
@@ -23,7 +35,7 @@ export default function ServicesSection() {
   )
 
   useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
+    const onKeyDown = (e: KeyboardEvent) => {
       if (openSlug === null) return
       if (e.key === 'Escape') closeModal()
       if (e.key === 'ArrowLeft') navigate(locale === 'ar' ? 1 : -1)
@@ -33,13 +45,8 @@ export default function ServicesSection() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [openSlug, closeModal, navigate, locale])
 
-  // Lock body scroll when modal is open
   useEffect(() => {
-    if (openSlug !== null) {
-      document.body.classList.add('wdetail-open')
-    } else {
-      document.body.classList.remove('wdetail-open')
-    }
+    document.body.classList.toggle('wdetail-open', openSlug !== null)
     return () => document.body.classList.remove('wdetail-open')
   }, [openSlug])
 
@@ -59,15 +66,21 @@ export default function ServicesSection() {
 
   const isOpen = openSlug !== null
 
+  // Compute centered modal target in viewport
+  const modalW = typeof window !== 'undefined' ? Math.min(980, window.innerWidth * 0.92) : 980
+  const modalH = typeof window !== 'undefined' ? Math.min(720, window.innerHeight * 0.88) : 720
+  const targetX = typeof window !== 'undefined' ? (window.innerWidth - modalW) / 2 : 0
+  const targetY = typeof window !== 'undefined' ? (window.innerHeight - modalH) / 2 : 0
+
+  const tileRect = tileRectRef.current
+
   return (
     <>
       {/* Ticker band */}
       <div className="ticker" aria-hidden="true">
         <div className="ticker__track">
           {tickerItems.map((item, i) => (
-            <span key={i} className="ticker__item">
-              ◆ {item}
-            </span>
+            <span key={i} className="ticker__item">◆ {item}</span>
           ))}
         </div>
       </div>
@@ -87,13 +100,23 @@ export default function ServicesSection() {
             {services.map((svc) => (
               <article
                 key={svc.slug}
-                className="wtile"
+                data-cursor="open"
+                className={`wtile${openingSlug === svc.slug ? ' is-opening' : ''}`}
                 role="listitem"
                 data-svc={svc.slug}
                 tabIndex={0}
                 aria-label={localise(svc.title, locale)}
-                onClick={() => setOpenSlug(svc.slug)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpenSlug(svc.slug) } }}
+                onClick={(e) => {
+                  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+                  openService(svc.slug, rect)
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+                    openService(svc.slug, rect)
+                  }
+                }}
                 onMouseMove={handleTileMouseMove}
               >
                 <div className="wtile__glass" aria-hidden="true">
@@ -165,98 +188,151 @@ export default function ServicesSection() {
           onClick={handleClose}
         >
           <div className="wdetail__backdrop" data-wclose></div>
-          <div className="wdetail__frame" id="wdetail-frame">
-            <div className="wdetail__chrome">
-              <div className="wdetail__dots" aria-hidden="true">
-                <span></span><span></span><span></span>
-              </div>
-              <div className="wdetail__addr">
-                <span className="wdetail__addr-cross" aria-hidden="true"></span>
-                <span id="wdetail-addr">
-                  shubak.sa/services/{openService?.slug ?? ''}
-                </span>
-              </div>
-              <button
-                className="wdetail__close"
-                type="button"
-                data-wclose
-                aria-label={locale === 'ar' ? 'إغلاق' : 'Close'}
-                onClick={closeModal}
+
+          <AnimatePresence onExitComplete={() => setOpeningSlug(null)}>
+            {isOpen && (
+              <motion.div
+                key="frame"
+                className="wdetail__frame"
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  width: modalW,
+                  height: modalH,
+                  // override CSS centering; framer drives x/y
+                  transform: 'none',
+                }}
+                initial={prefersReducedMotion ? { opacity: 0 } : {
+                  x: tileRect?.left ?? targetX,
+                  y: tileRect?.top ?? targetY,
+                  width: tileRect?.width ?? modalW,
+                  height: tileRect?.height ?? modalH,
+                  opacity: 0,
+                }}
+                animate={{
+                  x: targetX,
+                  y: targetY,
+                  width: modalW,
+                  height: modalH,
+                  opacity: 1,
+                }}
+                exit={prefersReducedMotion ? { opacity: 0 } : {
+                  x: tileRect?.left ?? targetX,
+                  y: tileRect?.top ?? targetY,
+                  width: tileRect?.width ?? modalW,
+                  height: tileRect?.height ?? modalH,
+                  opacity: 0,
+                }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-                </svg>
-              </button>
-            </div>
-
-            <div className="wdetail__scroll">
-              {openService && (
-                <>
-                  <div className="wdetail__hero">
-                    <span className="wdetail__num" id="wdetail-num">{openService.num}</span>
-                    <h3 className="wdetail__title" id="wdetail-title">
-                      {localise(openService.title, locale)}
-                    </h3>
-                    <p className="wdetail__tag" id="wdetail-tag">
-                      {localise(openService.tag, locale)}
-                    </p>
+                {/* Chrome — fades in after frame lands */}
+                <motion.div
+                  className="wdetail__chrome"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ delay: prefersReducedMotion ? 0 : 0.38, duration: 0.2 }}
+                >
+                  <div className="wdetail__dots" aria-hidden="true">
+                    <span></span><span></span><span></span>
                   </div>
-
-                  <div className="wdetail__grid">
-                    <section className="wdetail__block wdetail__block--wide">
-                      <span className="wdetail__klabel">
-                        {locale === 'ar' ? 'نظرة عامّة' : 'Overview'}
-                      </span>
-                      <p className="wdetail__over" id="wdetail-over">
-                        {localise(openService.overview, locale)}
-                      </p>
-                    </section>
-
-                    <section className="wdetail__block">
-                      <span className="wdetail__klabel">
-                        {locale === 'ar' ? 'ما نُسلّمه' : 'What we deliver'}
-                      </span>
-                      <ul className="wdetail__list" id="wdetail-deliver">
-                        {openService.deliver[locale].map((item, i) => (
-                          <li key={i}>{item}</li>
-                        ))}
-                      </ul>
-                    </section>
-
-                    <section className="wdetail__block">
-                      <span className="wdetail__klabel">
-                        {locale === 'ar' ? 'التقنيات' : 'Stack'}
-                      </span>
-                      <ul className="wdetail__chips" id="wdetail-stack">
-                        {openService.stack.map((chip, i) => (
-                          <li key={i}>{chip}</li>
-                        ))}
-                      </ul>
-                    </section>
-
-                    <section className="wdetail__block wdetail__block--wide">
-                      <span className="wdetail__klabel">
-                        {locale === 'ar' ? 'مثال حقيقي' : 'Sample'}
-                      </span>
-                      <p className="wdetail__sample" id="wdetail-sample">
-                        {localise(openService.sample, locale)}
-                      </p>
-                    </section>
-                  </div>
-
-                  <div className="wdetail__cta">
-                    <a href="#contact" className="btn btn--primary" data-wclose onClick={closeModal}>
-                      <span>{locale === 'ar' ? 'نبني لك واحد زي كذا' : 'Build one like this'}</span>
-                      <span className="btn__arr" aria-hidden="true">→</span>
-                    </a>
-                    <span className="wdetail__hint">
-                      {locale === 'ar' ? 'ESC للإغلاق • ← → للتنقّل' : 'ESC to close • ← → to navigate'}
+                  <div className="wdetail__addr">
+                    <span className="wdetail__addr-cross" aria-hidden="true"></span>
+                    <span id="wdetail-addr">
+                      shubak.sa/services/{openService_?.slug ?? ''}
                     </span>
                   </div>
-                </>
-              )}
-            </div>
-          </div>
+                  <button
+                    className="wdetail__close"
+                    type="button"
+                    data-wclose
+                    aria-label={locale === 'ar' ? 'إغلاق' : 'Close'}
+                    onClick={closeModal}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                    </svg>
+                  </button>
+                </motion.div>
+
+                {/* Scrollable content — fades in after chrome */}
+                <motion.div
+                  className="wdetail__scroll"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ delay: prefersReducedMotion ? 0 : 0.44, duration: 0.22 }}
+                >
+                  {openService_ && (
+                    <>
+                      <div className="wdetail__hero">
+                        <span className="wdetail__num" id="wdetail-num">{openService_.num}</span>
+                        <h3 className="wdetail__title" id="wdetail-title">
+                          {localise(openService_.title, locale)}
+                        </h3>
+                        <p className="wdetail__tag" id="wdetail-tag">
+                          {localise(openService_.tag, locale)}
+                        </p>
+                      </div>
+
+                      <div className="wdetail__grid">
+                        <section className="wdetail__block wdetail__block--wide">
+                          <span className="wdetail__klabel">
+                            {locale === 'ar' ? 'نظرة عامّة' : 'Overview'}
+                          </span>
+                          <p className="wdetail__over" id="wdetail-over">
+                            {localise(openService_.overview, locale)}
+                          </p>
+                        </section>
+
+                        <section className="wdetail__block">
+                          <span className="wdetail__klabel">
+                            {locale === 'ar' ? 'ما نُسلّمه' : 'What we deliver'}
+                          </span>
+                          <ul className="wdetail__list" id="wdetail-deliver">
+                            {openService_.deliver[locale].map((item, i) => (
+                              <li key={i}>{item}</li>
+                            ))}
+                          </ul>
+                        </section>
+
+                        <section className="wdetail__block">
+                          <span className="wdetail__klabel">
+                            {locale === 'ar' ? 'التقنيات' : 'Stack'}
+                          </span>
+                          <ul className="wdetail__chips" id="wdetail-stack">
+                            {openService_.stack.map((chip, i) => (
+                              <li key={i}>{chip}</li>
+                            ))}
+                          </ul>
+                        </section>
+
+                        <section className="wdetail__block wdetail__block--wide">
+                          <span className="wdetail__klabel">
+                            {locale === 'ar' ? 'مثال حقيقي' : 'Sample'}
+                          </span>
+                          <p className="wdetail__sample" id="wdetail-sample">
+                            {localise(openService_.sample, locale)}
+                          </p>
+                        </section>
+                      </div>
+
+                      <div className="wdetail__cta">
+                        <a href="#contact" className="btn btn--primary" data-wclose onClick={closeModal}>
+                          <span>{locale === 'ar' ? 'نبني لك واحد زي كذا' : 'Build one like this'}</span>
+                          <span className="btn__arr" aria-hidden="true">→</span>
+                        </a>
+                        <span className="wdetail__hint">
+                          {locale === 'ar' ? 'ESC للإغلاق • ← → للتنقّل' : 'ESC to close • ← → to navigate'}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
     </>

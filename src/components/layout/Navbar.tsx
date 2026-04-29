@@ -8,15 +8,6 @@ import { useLocale } from '@/lib/i18n/context'
 import { MobileMenu } from '@/components/MobileMenu'
 import { cn } from '@/lib/utils'
 
-function NavSeparator() {
-  return (
-    <span
-      aria-hidden="true"
-      className="h-5 w-px shrink-0 bg-white/10"
-    />
-  )
-}
-
 function HamburgerIcon({ open }: { open: boolean }) {
   return (
     <div className="flex w-[18px] flex-col gap-[5px]" aria-hidden="true">
@@ -35,6 +26,9 @@ function HamburgerIcon({ open }: { open: boolean }) {
     </div>
   )
 }
+
+const NAV_LINK_CLASS =
+  'relative hidden min-h-[44px] items-center text-[14px] font-medium text-white/70 transition-colors hover:text-white md:flex after:absolute after:bottom-0 after:start-0 after:block after:h-px after:w-full after:origin-start after:scale-x-0 after:bg-white/40 after:transition-transform after:duration-300 hover:after:scale-x-100'
 
 export function Navbar() {
   const { locale, setLocale, dict } = useLocale()
@@ -57,18 +51,26 @@ export function Navbar() {
     <>
       <header
         className="fixed top-6 left-1/2 z-[100] -translate-x-1/2"
-        style={{ width: 'max-content', maxWidth: 'calc(100vw - 32px)' }}
+        style={{
+          width: 'max-content',
+          maxWidth: 'calc(100vw - 32px)',
+          minWidth: scrolled ? '0' : 'min(1280px, calc(100vw - 32px))',
+          transition: 'min-width 400ms cubic-bezier(0.16,1,0.3,1)',
+        }}
       >
         <nav
-          className="flex items-center gap-4 rounded-full border px-4 py-2 transition-[background-color,border-color,backdrop-filter] duration-300"
+          className="flex items-center rounded-full border transition-[background-color,border-color,backdrop-filter,padding,gap] duration-[400ms] ease-[var(--ease-out-expo)]"
           style={{
+            padding: scrolled ? '0.5rem 1rem' : '0.625rem 1.5rem',
+            gap: scrolled ? '1rem' : '1.5rem',
+            justifyContent: scrolled ? 'flex-start' : 'space-between',
             background: scrolled ? 'rgba(15, 17, 21, 0.85)' : 'transparent',
             borderColor: scrolled ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.04)',
             backdropFilter: scrolled ? 'blur(12px)' : 'none',
             WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
           }}
         >
-          {/* Logo */}
+          {/* Left: logo */}
           <Link
             href="/"
             aria-label={dict.site.brand}
@@ -77,75 +79,65 @@ export function Navbar() {
             <ShubakLogo className="h-4 w-4" aria-hidden="true" />
           </Link>
 
-          {/* Desktop nav links */}
-          <NavSeparator />
-
-          <Link
-            href="/#services"
-            className="relative hidden min-h-[44px] items-center text-[14px] font-medium text-white/70 transition-colors hover:text-white md:flex after:absolute after:bottom-0 after:start-0 after:block after:h-px after:w-full after:origin-start after:scale-x-0 after:bg-white/40 after:transition-transform after:duration-300 hover:after:scale-x-100"
-          >
-            {dict.nav.services}
-          </Link>
-
-          <Link
-            href="/#process"
-            className="relative hidden min-h-[44px] items-center text-[14px] font-medium text-white/70 transition-colors hover:text-white md:flex after:absolute after:bottom-0 after:start-0 after:block after:h-px after:w-full after:origin-start after:scale-x-0 after:bg-white/40 after:transition-transform after:duration-300 hover:after:scale-x-100"
-          >
-            {dict.nav.about}
-          </Link>
-
-          <Link
-            href="/contact"
-            className="relative hidden min-h-[44px] items-center text-[14px] font-medium text-white/70 transition-colors hover:text-white md:flex after:absolute after:bottom-0 after:start-0 after:block after:h-px after:w-full after:origin-start after:scale-x-0 after:bg-white/40 after:transition-transform after:duration-300 hover:after:scale-x-100"
-          >
-            {dict.nav.contact}
-          </Link>
-
-          <NavSeparator />
-
-          {/* Language toggle */}
-          <button
-            type="button"
-            onClick={() => setLocale(locale === 'ar' ? 'en' : 'ar')}
-            className="relative min-h-[44px] min-w-[44px] overflow-hidden text-[14px] font-medium text-[#a0a0a0] transition-colors hover:text-white"
-          >
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={locale}
-                initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="block"
-              >
-                {locale === 'ar' ? 'EN' : 'AR'}
-              </motion.span>
-            </AnimatePresence>
-          </button>
-
-          {/* Start a Project — desktop only */}
-          <motion.div
-            className="hidden md:block"
-            whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
-          >
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center rounded-full border border-white/[0.14] px-6 py-2 text-[12px] font-medium uppercase tracking-[0.14em] text-white transition-all duration-300 hover:scale-[1.03] hover:border-white/25 hover:bg-white hover:text-black hover:shadow-[0_0_20px_rgba(255,255,255,0.06)]"
-            >
-              {dict.nav.startProject}
+          {/* Center: nav links (desktop) */}
+          <div className="hidden items-center gap-6 md:flex">
+            <Link href="/#services" className={NAV_LINK_CLASS}>
+              {dict.nav.services}
             </Link>
-          </motion.div>
+            <Link href="/#process" className={NAV_LINK_CLASS}>
+              {dict.nav.about}
+            </Link>
+            <Link href="/contact" className={NAV_LINK_CLASS}>
+              {dict.nav.contact}
+            </Link>
+          </div>
 
-          {/* Hamburger — mobile only */}
-          <button
-            type="button"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? dict.nav.closeMenu : dict.nav.openMenu}
-            aria-expanded={menuOpen}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center text-white/70 transition-colors hover:text-white md:hidden"
-          >
-            <HamburgerIcon open={menuOpen} />
-          </button>
+          {/* Right: lang toggle + CTA + hamburger */}
+          <div className="flex items-center gap-3">
+            {/* Language toggle */}
+            <button
+              type="button"
+              onClick={() => setLocale(locale === 'ar' ? 'en' : 'ar')}
+              className="relative min-h-[44px] min-w-[44px] overflow-hidden text-[14px] font-medium text-[#a0a0a0] transition-colors hover:text-white"
+            >
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={locale}
+                  initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={prefersReducedMotion ? {} : { opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                  className="block"
+                >
+                  {locale === 'ar' ? 'EN' : 'AR'}
+                </motion.span>
+              </AnimatePresence>
+            </button>
+
+            {/* CTA — desktop only */}
+            <motion.div
+              className="hidden md:block"
+              whileTap={prefersReducedMotion ? {} : { scale: 0.98 }}
+            >
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center rounded-full bg-white px-5 py-2 text-[13px] font-medium text-black transition-all duration-300 hover:scale-[1.02] hover:bg-white/90 hover:shadow-[0_0_24px_rgba(255,255,255,0.15)]"
+              >
+                {dict.nav.startProject}
+              </Link>
+            </motion.div>
+
+            {/* Hamburger — mobile only */}
+            <button
+              type="button"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={menuOpen ? dict.nav.closeMenu : dict.nav.openMenu}
+              aria-expanded={menuOpen}
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center text-white/70 transition-colors hover:text-white md:hidden"
+            >
+              <HamburgerIcon open={menuOpen} />
+            </button>
+          </div>
         </nav>
       </header>
 

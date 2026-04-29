@@ -61,6 +61,7 @@ export const en: Dict = {
     sectionTag: 'Shipped',
     heading: 'Products we',
     headingAccent: ' shipped.',
+    placeholder: 'Coming soon',
     items: [
       {
         category: 'Logistics',
@@ -97,9 +98,25 @@ export const en: Dict = {
     headingAccent: ' your window.',
     subtitle:
       "Four quick questions. We'll reply in one business day with a candid answer — and if we're not the right fit, we'll tell you.",
-    trustLine: 'We reply within one business day',
+    trustLine: 'We reply within 24 hours',
   },
   contact: {
+    intro: {
+      eyebrow: 'Get in touch',
+      heading: "Let's open your window.",
+      sub: "Tell us what you're building. We'll give you a straight answer on fit, timeline, and cost — within 24 hours.",
+    },
+    sla: {
+      label: 'We reply within 24 hours',
+    },
+    next: {
+      title: 'What happens next',
+      steps: [
+        { name: 'Discovery call', desc: 'We schedule a 30-minute call within 24 hours of your submission.' },
+        { name: 'Scope + estimate', desc: 'We send a detailed scope and fixed-price estimate within 3 business days.' },
+        { name: 'Kickoff or honest no', desc: "If we're not the right fit, we'll tell you — and point you toward someone who is." },
+      ],
+    },
     wizard: {
       steps: {
         reason: 'Reason',
@@ -186,9 +203,10 @@ export const en: Dict = {
     companyCol: 'Company',
     connectCol: 'Connect',
     contactLink: 'Start a project',
+    marquee: 'SHUBAK',
     connectItems: [
-      { label: 'hello@shubak.ai', href: 'mailto:hello@shubak.ai' },
-      { label: 'LinkedIn', href: 'https://linkedin.com/company/shubak' },
+      { label: 'hello@shubak.ai', href: 'mailto:hello@shubak.ai', icon: 'mail' as const },
+      { label: 'LinkedIn', href: 'https://linkedin.com/company/shubak', icon: 'linkedin' as const },
     ],
     copyright: '© Shubak 2026',
   },

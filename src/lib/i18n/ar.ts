@@ -59,6 +59,7 @@ export const ar = {
     sectionTag: 'شغل شحنّاه',
     heading: 'منتجات',
     headingAccent: ' شحنّاها.',
+    placeholder: 'قريباً',
     items: [
       {
         category: 'لوجستيك',
@@ -95,9 +96,25 @@ export const ar = {
     headingAccent: ' الشبّاك معك.',
     subtitle:
       'أربع أسئلة سريعة. نرد عليك خلال يوم عمل برأي صريح — وإذا ما نحن الفريق الصح، بنقولك.',
-    trustLine: 'نرد عليك خلال يوم عمل',
+    trustLine: 'نرد خلال ٢٤ ساعة',
   },
   contact: {
+    intro: {
+      eyebrow: 'تواصل معنا',
+      heading: 'خلنا نفتح الشبّاك معك.',
+      sub: 'احكِ لنا وش تبني. نرد عليك بجواب صريح عن التناسب والجدول والتكلفة — خلال ٢٤ ساعة.',
+    },
+    sla: {
+      label: 'نرد خلال ٢٤ ساعة',
+    },
+    next: {
+      title: 'ماذا بعد',
+      steps: [
+        { name: 'اتصال استكشافي', desc: 'نحجز معك كول ٣٠ دقيقة خلال ٢٤ ساعة من تقديم طلبك.' },
+        { name: 'نطاق وتسعيرة', desc: 'نرسل لك نطاق تفصيلي وسعر ثابت خلال ٣ أيام عمل.' },
+        { name: 'انطلاق أو لا صريحة', desc: 'إذا ما كنّا الفريق الصح، راح نقولك — ونوصّلك لمن يقدر يخدمك.' },
+      ],
+    },
     wizard: {
       steps: {
         reason: 'السبب',
@@ -184,9 +201,10 @@ export const ar = {
     companyCol: 'شركة',
     connectCol: 'تواصل',
     contactLink: 'ابدأ مشروع',
+    marquee: 'SHUBAK',
     connectItems: [
-      { label: 'hello@shubak.ai', href: 'mailto:hello@shubak.ai' },
-      { label: 'LinkedIn', href: 'https://linkedin.com/company/shubak' },
+      { label: 'hello@shubak.ai', href: 'mailto:hello@shubak.ai', icon: 'mail' as const },
+      { label: 'LinkedIn', href: 'https://linkedin.com/company/shubak', icon: 'linkedin' as const },
     ],
     copyright: '© شُبّاك ٢٠٢٦',
   },

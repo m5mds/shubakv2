@@ -34,9 +34,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
         return
       }
 
-      if (event.key !== 'Tab' || !dialogRef.current) {
-        return
-      }
+      if (event.key !== 'Tab' || !dialogRef.current) return
 
       const focusableElements = Array.from(
         dialogRef.current.querySelectorAll<HTMLElement>(
@@ -44,14 +42,11 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
         )
       )
 
-      if (!focusableElements.length) {
-        return
-      }
+      if (!focusableElements.length) return
 
       const firstElement = focusableElements[0]
       const lastElement = focusableElements[focusableElements.length - 1]
-      const activeElement =
-        document.activeElement instanceof HTMLElement ? document.activeElement : null
+      const activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : null
 
       if (event.shiftKey) {
         if (!activeElement || activeElement === firstElement) {
@@ -109,6 +104,8 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
               <h2 id="mobile-menu-title" className="sr-only">
                 {dict.nav.openMenu}
               </h2>
+
+              {/* Close button — SVG cross */}
               <button
                 ref={closeButtonRef}
                 type="button"
@@ -117,7 +114,9 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                 className="absolute top-4 text-white/60 transition-colors hover:text-white"
                 style={{ insetInlineEnd: '1rem' }}
               >
-                <span className="text-xl leading-none">x</span>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
               </button>
 
               <div className="flex min-h-[70vh] flex-col justify-between">
@@ -125,6 +124,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                   {links.map((link, i) => (
                     <motion.div
                       key={link.href}
+                      className="mobile-link-wrap"
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 + i * 0.06, ease: revealEase, duration: 0.35 }}
@@ -152,7 +152,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                   <Link
                     href="/contact"
                     onClick={onClose}
-                    className="inline-flex h-12 items-center justify-center rounded-full border border-white/[0.14] px-7 text-[11px] uppercase tracking-[0.18em] text-white transition-colors hover:border-white/[0.26] hover:bg-white hover:text-black"
+                    className="inline-flex h-12 items-center justify-center rounded-full bg-white px-7 text-[12px] font-medium text-black transition-all duration-300 hover:bg-white/90"
                   >
                     {dict.nav.startProject}
                   </Link>
