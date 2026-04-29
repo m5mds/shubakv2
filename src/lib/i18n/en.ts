@@ -99,7 +99,7 @@ export const en: Dict = {
     headingMain: "Let's open",
     headingAccent: ' your window.',
     subtitle:
-      "Four quick questions. We'll reply in one business day with a candid answer — and if we're not the right fit, we'll tell you.",
+      "Four quick questions. We'll reply in one business day with a candid answer.",
     trustLine: 'We reply within 24 hours',
   },
   contact: {
